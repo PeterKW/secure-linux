@@ -33,3 +33,13 @@ sudo systemctl start fail2ban
 
 echo "listening ports"
 sudo netstat -tunlp
+
+echo "Update ManjaroanjaroKernelHeaders? (y/n)" -n 1 -r
+
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    exit 1
+fi
+echo
+
+$updateMKHadr = find ../ -type f -name "updateManjaroKernelHeaders.sh" 2>&1 | head -n 1

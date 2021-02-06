@@ -20,18 +20,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     else
         echo "AppArmor not detected"
     fi
-    echo
-
-    if [[ $(compgen -c) == *"gufw"* ]]; then
-        echo "Firewall Config GUI (gufw) installed"
-        read -p "Would you like to open it now? (y/n) " -n 1 -r
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            gufw
-        fi
-    else
-        echo "Firewall Config GUI not detected"
-        echo "Please install gufw package"
-    fi
 fi
 
 # --- Setup UFW rules
@@ -71,6 +59,19 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 EOF
 fi
 
+# --- Check gufw Installed
+echo
+if [[ $(compgen -c) == *"gufw"* ]]; then
+	echo "Firewall Config GUI (gufw) installed"
+	read -p "Would you like to open it now? (y/n) " -n 1 -r
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		gufw
+	fi
+else
+	echo "Firewall Config GUI not detected"
+	echo "Please install gufw package"
+fi
+
 # --- Enable fail2ban
 # cp: cannot stat 'fail2ban.local'
 echo
@@ -104,17 +105,16 @@ fi
 echo
 read -p "Check for unsigned kernel modules? (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo
-    lsmod | tail -n +2 | cut -d' ' -f1
-    read -p "Display unsigned kernel modules in more detail? (y/n) " -n 1 -r
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        for mod in $(lsmod | tail -n +2 | cut -d' ' -f1); 
-            do modinfo ${mod}
-        done
-    fi
+	#touch UnsignedKernelModules.txt
+	#touch UnsignedKernelModulesSorted.txt
+	#echo > UnsignedKernelModules.txt
+	for mod in $(lsmod | tail -n +2 | cut -d' ' -f1); do modinfo ${mod} | grep -q "signature" || echo "no signature for module: ${mod}" ; done
+	#|| $(mod) >> UnsignedKernelModules.txt 
+	#sort UnsignedKernelModules.txt > UnsignedKernelModulesSorted.txt
 fi
 
 # --- Make sure kernel headers up to date
+#TODO Only update if new version
 echo
 read -p "Update ManjaroKernelHeaders? (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then

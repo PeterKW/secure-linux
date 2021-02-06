@@ -5,6 +5,10 @@
 #-fail2ban
 #-netstat/net-tools
 
+#https://www.golinuxcloud.com/get-script-name-get-script-path-shell-script/
+script_path=$(dirname $(readlink -f $0))
+
+echo "Script path: $script_path"
 
 # --- Check ufw & gufw
 echo
@@ -59,26 +63,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 EOF
 fi
 
-# --- Check gufw Installed
-echo
-if [[ $(compgen -c) == *"gufw"* ]]; then
-	echo "Firewall Config GUI (gufw) installed"
-	read -p "Would you like to open it now? (y/n) " -n 1 -r
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		gufw
-	fi
-else
-	echo "Firewall Config GUI not detected"
-	echo "Please install gufw package"
-fi
-
 # --- Enable fail2ban
 # cp: cannot stat 'fail2ban.local'
 echo
 read -p "Enable fail2ban? (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
-    sudo cp fail2ban.local /etc/fail2ban/
+    sudo cp $script_path/fail2ban.local /etc/fail2ban/
     sudo systemctl enable fail2ban
     sudo systemctl start fail2ban
 fi
@@ -123,6 +114,20 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Launching update Kernel Headers at $updateMKHadr"
     $updateMKHadr
     echo
+fi
+
+# --- Check gufw Installed
+echo
+if [[ $(compgen -c) == *"gufw"* ]]; then
+	echo "Firewall Config GUI (gufw) installed"
+	read -p "Would you like to open it now? (y/n) " -n 1 -r
+	if [[ $REPLY =~ ^[Yy]$ ]]; then
+		aa-status
+		gufw
+	fi
+else
+	echo "Firewall Config GUI not detected"
+	echo "Please install gufw package"
 fi
 
 echo

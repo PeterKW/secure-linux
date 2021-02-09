@@ -41,7 +41,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # --- Harden /etc/sysctl.conf
-# sysctl: cannot stat /proc/sys/mib: No such file or directory
+# sudo sysctl mib - sysctl: cannot stat /proc/sys/mib: No such file or directory
 echo
 read -p "Harden /etc/sysctl.conf? (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -64,7 +64,6 @@ EOF
 fi
 
 # --- Enable fail2ban
-# cp: cannot stat 'fail2ban.local'
 echo
 read -p "Enable fail2ban? (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -82,7 +81,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo netstat -tunlp
 fi
 
-# --- Check for Drovorub Malware
+# --- Check for Drovorub Malware 
 echo
 read -p "Check for Drovorub Malware? (If error removing file => Malware) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then

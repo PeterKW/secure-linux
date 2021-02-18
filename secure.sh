@@ -17,6 +17,7 @@ read -p "Check ufw & gufw (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
     sudo ufw status verbose
+    sudo ufw --force enable
 
     if [[ $(compgen -c) == *"apparmor"* ]]; then
         echo "AppArmor installed"

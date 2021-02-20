@@ -58,7 +58,7 @@ fi
 echo
 read -p "PREVENT IP SPOOFS? (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-        sudo cat << EOF > /etc/host.conf
+    sudo cat << EOF > /etc/host.conf
         order bind,hosts
         multi on
 EOF

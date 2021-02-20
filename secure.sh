@@ -96,12 +96,12 @@ fi
 echo
 read -p "Check for unsigned kernel modules? (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-	#touch UnsignedKernelModules.txt
-	#touch UnsignedKernelModulesSorted.txt
-	#echo > UnsignedKernelModules.txt
-	for mod in $(lsmod | tail -n +2 | cut -d' ' -f1); do modinfo ${mod} | grep -q "signature" || echo; echo "no signature for module: ${mod}" ; done
+	touch UnsignedKernelModules.txt
+	touch UnsignedKernelModulesSorted.txt
+	echo > UnsignedKernelModules.txt
+	for mod in $(lsmod | tail -n +2 | cut -d' ' -f1); do modinfo ${mod} | grep -q "signature" || echo; echo "no signature for module: ${mod}" || $(mod) > UnsignedKernelModules.txt ; done
 	#|| $(mod) >> UnsignedKernelModules.txt 
-	#sort UnsignedKernelModules.txt > UnsignedKernelModulesSorted.txt
+	sort UnsignedKernelModules.txt > UnsignedKernelModulesSorted.txt
 fi
 
 # --- Make sure kernel headers up to date

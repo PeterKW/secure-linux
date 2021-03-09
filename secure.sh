@@ -110,7 +110,7 @@ echo
 read -p "Update ManjaroKernelHeaders? (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
-    updateMKHadr=$(find ../ -type f -name "updateManjaroKernelHeaders.sh" 2>&1 | head -n 1)
+    updateMKHadr=$(find $script_path/../ -type f -name "updateManjaroKernelHeaders.sh" 2>&1 | head -n 1)
     echo "Launching update Kernel Headers at $updateMKHadr"
     $updateMKHadr
     echo

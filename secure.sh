@@ -1,9 +1,9 @@
 #!/bin/bash
 #-----------------------
 #--Required Packages-
-#-ufw
+#-ufw (gufw)
 #-fail2ban
-#-netstat/net-tools
+#-netstat/net-tools netstat-nat
 
 #https://www.golinuxcloud.com/get-script-name-get-script-path-shell-script/
 script_path=$(dirname $(readlink -f $0))
@@ -28,15 +28,15 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # --- Setup UFW rules
-echo 
+echo
 read -p "Setup UFW rules? (sudo) (y/n) " -n 1 -r
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
-    sudo ufw limit 22/tcp  
-    sudo ufw allow 80/tcp  
-    sudo ufw allow 443/tcp  
-    sudo ufw default deny incoming  
+    sudo ufw limit 22/tcp
+    sudo ufw allow 80/tcp
+    sudo ufw allow 443/tcp
+    sudo ufw default deny incoming
     sudo ufw default allow outgoing
     sudo ufw enable
 fi
@@ -82,7 +82,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo netstat -tunlp
 fi
 
-# --- Check for Drovorub Malware 
+# --- Check for Drovorub Malware
 echo
 read -p "Check for Drovorub Malware? (If error removing file => Malware) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -100,7 +100,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 	touch UnsignedKernelModulesSorted.txt
 	echo > UnsignedKernelModules.txt
 	for mod in $(lsmod | tail -n +2 | cut -d' ' -f1); do modinfo ${mod} | grep -q "signature" || echo; echo "no signature for module: ${mod}" || $(mod) > UnsignedKernelModules.txt ; done
-	#|| $(mod) >> UnsignedKernelModules.txt 
+	#|| $(mod) >> UnsignedKernelModules.txt
 	sort UnsignedKernelModules.txt > UnsignedKernelModulesSorted.txt
 fi
 

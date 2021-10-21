@@ -10,6 +10,35 @@ script_path=$(dirname $(readlink -f $0))
 
 echo "Script path: $script_path"
 
+#Check Package dependencies installed
+
+# Easy way to check for dependencies
+#https://gist.github.com/montanaflynn/e1e754784749fd2aaca7
+checkfor () {
+    command -v $1 >/dev/null 2>&1 || { 
+        echo "$1 required"; #echo >&2 stderr
+        if [[ "$(which $1)" == "" ]]
+        then
+            if [ "$(lsb_release -is)" == "ManjaroLinux" ]
+            then
+                echo "Installing $1..."
+                sudo pamac install --no-confirm $1
+            fi
+            if [ "$(lsb_release -is)" == "Debian" ]
+            then
+                echo "Installing $1..."
+                sudo apt install -y $1
+            fi
+        fi
+        #exit 1; 
+    }
+}
+pkgArray=( "ufw" "fail2ban" "netstat-nat" "apparmor" "gufw" )
+for i in "${pkgArray[@]}"
+do
+    checkfor "$i"
+done
+
 # --- Check ufw & gufw
 echo
 read -p "Check ufw & gufw (sudo) (y/n) " -n 1 -r
@@ -58,6 +87,7 @@ fi
 echo
 read -p "PREVENT IP SPOOFS? (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
+    #sudo chmod 666 host.conf
     sudo cat << EOF > /etc/host.conf
         order bind,hosts
         multi on
@@ -106,14 +136,16 @@ fi
 
 # --- Make sure kernel headers up to date
 #TODO Only update if new version
-echo
-read -p "Update ManjaroKernelHeaders? (y/n) " -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if [[ "$(lsb_release -is)" == "ManjaroLinux" ]]; then
     echo
-    updateMKHadr=$(find $script_path/../ -type f -name "updateManjaroKernelHeaders.sh" 2>&1 | head -n 1)
-    echo "Launching update Kernel Headers at $updateMKHadr"
-    $updateMKHadr
-    echo
+    read -p "Update ManjaroKernelHeaders? (y/n) " -n 1 -r
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo
+        updateMKHadr=$(find $script_path/../ -type f -name "updateManjaroKernelHeaders.sh" 2>&1 | head -n 1)
+        echo "Launching update Kernel Headers at $updateMKHadr"
+        $updateMKHadr
+        echo
+    fi
 fi
 
 # --- Check gufw Installed

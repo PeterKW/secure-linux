@@ -5,6 +5,8 @@
 #-fail2ban
 #-netstat/net-tools netstat-nat
 
+#TODO update packages with new 2d Array System
+
 #https://www.golinuxcloud.com/get-script-name-get-script-path-shell-script/
 script_path=$(dirname $(readlink -f $0))
 
@@ -84,6 +86,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # --- PREVENT IP SPOOFS
+#TODO Implament so that doesn't have errors https://stackoverflow.com/a/10145083
+#sudo tee -a /etc/pacman.conf >/dev/null <<'EOF'
+#[archlinuxfr]
+#Server = http://repo.archlinux.fr/$arch
+#
+#EOF
+
 echo
 read -p "PREVENT IP SPOOFS? (sudo) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then

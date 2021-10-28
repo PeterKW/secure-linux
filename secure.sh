@@ -158,7 +158,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # --- Make sure kernel headers up to date
-#TODO Only update if new version
 if [[ "$(lsb_release -is)" == "ManjaroLinux" ]]; then
     echo
     read -p "Update ManjaroKernelHeaders? (y/n) " -n 1 -r

@@ -3,7 +3,7 @@
 #--Required Packages-
 #-ufw (gufw)
 #-fail2ban
-#-netstat/net-tools netstat-nat
+#-net-tools netstat-nat
 
 #https://www.golinuxcloud.com/get-script-name-get-script-path-shell-script/
 script_path=$(dirname $(readlink -f $0))
@@ -42,12 +42,13 @@ pkgArray[0,1]="ufw"
 pkgArray[1,0]="fail2ban"
 pkgArray[1,1]="fail2ban"
 pkgArray[2,0]="netstat-nat"
-pkgArray[2,1]="netstat/net-tools"
-#-netstat/net-tools
+pkgArray[2,1]="netstat-nat"
 pkgArray[3,0]="apparmor"
 pkgArray[3,1]="apparmor"
 pkgArray[4,0]="gufw"
 pkgArray[4,1]="gufw"
+pkgArray[4,0]="net-tools"
+pkgArray[4,1]="net-tools"
 
 for (( i=0; i<${#pkgArray[@]}; i++ ))
 do 

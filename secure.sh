@@ -16,7 +16,7 @@ echo "Script path: $script_path"
 #https://gist.github.com/montanaflynn/e1e754784749fd2aaca7
 checkfor () {
     command -v $1 >/dev/null 2>&1 || { 
-        if [[ "$(which $1)" == "" ]] 
+        if [[ "$(which $1)" == "" ]] | [[ "$(which $1)" =~ "no $1" ]] # =~ is contains
         then
             if [ "$(lsb_release -is)" == "ManjaroLinux" ]
 			then

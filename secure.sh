@@ -7,7 +7,9 @@
 
 #https://www.golinuxcloud.com/get-script-name-get-script-path-shell-script/
 script_path=$(dirname $(readlink -f $0))
-
+#echo "Loading compgen packages list..."
+#$compgenList=$(compgen -c)
+clear
 echo "Script path: $script_path"
 
 #Check Package dependencies installed
@@ -16,8 +18,7 @@ echo "Script path: $script_path"
 #https://gist.github.com/montanaflynn/e1e754784749fd2aaca7
 checkfor () {
     command -v $1 >/dev/null 2>&1 || { 
-        if [[ "$(which $1)" == "" ]] | [[ "$(which $1)" =~ "no $1" ]] # =~ is contains
-        then
+        if [[ "$(which $1)" == "" ]] | [[ "$(which $1)" =~ "no $1" ]]; then #[[ $compgenList == *"$1"* ]] #[[ "$(which $1)" == "" ]] # =~ is contains
             if [ "$(lsb_release -is)" == "ManjaroLinux" ]
 			then
 				echo "Installing $1..."
@@ -50,10 +51,16 @@ pkgArray[4,1]="gufw"
 pkgArray[4,0]="net-tools"
 pkgArray[4,1]="net-tools"
 
+echo "Checking packages..."
 for (( i=0; i<${#pkgArray[@]}; i++ ))
 do 
+    #echo ${i}"/"${#pkgArray[@]}
     checkfor "${pkgArray[$i,0]}" "${pkgArray[$i,1]}" ;
 done
+#echo "---------------------"
+
+clear
+echo "Script path: $script_path"
 
 # --- Check ufw & gufw
 echo
@@ -64,12 +71,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo ufw status verbose
     sudo ufw --force enable
 
-    if [[ $(compgen -c) == *"apparmor"* ]]; then
-        echo "AppArmor installed"
-        aa-status
-    else
-        echo "AppArmor not detected"
-    fi
+    aa-status
 fi
 
 # --- Setup UFW rules
@@ -100,7 +102,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 # --- PREVENT IP SPOOFS
-#TODO Implament so that doesn't have errors https://stackoverflow.com/a/10145083
+#TODO Implament so that doesnt have errors https://stackoverflow.com/a/10145083
 #sudo tee -a /etc/pacman.conf >/dev/null <<'EOF'
 #[archlinuxfr]
 #Server = http://repo.archlinux.fr/$arch
@@ -140,9 +142,9 @@ echo
 read -p "Check for Drovorub Malware? (If error removing file => Malware) (y/n) " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo
-    touch testfile
-    echo “ASDFZXCV:hf:testfile” > /dev/zero
-    rm testfile
+    sudo touch testfile
+    sudo echo “ASDFZXCV:hf:testfile” > /dev/zero
+    sudo rm testfile
 fi
 
 # --- Check for unsigned kernel modules
@@ -174,10 +176,10 @@ fi
 echo
 if [[ $(compgen -c) == *"gufw"* ]]; then
 	echo "Firewall Config GUI (gufw) installed"
-	read -p "Would you like to open it now? (y/n) " -n 1 -r
+	sudo aa-status
+    read -p "Would you like to open it now? (y/n) " -n 1 -r
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
-		aa-status
-		gufw
+		sudo gufw
 	fi
 else
 	echo "Firewall Config GUI not detected"
